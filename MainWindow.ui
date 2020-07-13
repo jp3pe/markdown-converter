@@ -73,6 +73,20 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_UnorderedList">
+       <property name="text">
+        <string>UnorderedList</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_OrderedList">
+       <property name="text">
+        <string>OrderedList</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QTextEdit" name="textEdit">
