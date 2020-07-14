@@ -74,9 +74,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_UnorderedList">
+      <widget class="QPushButton" name="pushButton_Bold">
        <property name="text">
-        <string>UnorderedList</string>
+        <string>Bold</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_Italic">
+       <property name="text">
+        <string>Italic</string>
        </property>
       </widget>
      </item>
@@ -84,6 +91,13 @@
       <widget class="QPushButton" name="pushButton_OrderedList">
        <property name="text">
         <string>OrderedList</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_UnorderedList">
+       <property name="text">
+        <string>UnorderedList</string>
        </property>
       </widget>
      </item>
