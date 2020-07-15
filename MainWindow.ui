@@ -122,6 +122,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_InlineCode">
+       <property name="text">
+        <string>InlineCode</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QTextEdit" name="textEdit">
