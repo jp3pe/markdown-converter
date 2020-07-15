@@ -72,6 +72,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.button_image = self.findChild(QtWidgets.QPushButton, 'pushButton_Image')
         self.button_image.clicked.connect(self.push_button_image)
 
+        self.button_block_quote = self.findChild(QtWidgets.QPushButton, 'pushButton_BlockQuote')
+        self.button_block_quote.clicked.connect(self.push_button_block_quote)
+
         # Editor
         # Connect text editor to Slot
         self.edit = self.findChild(QtWidgets.QTextEdit, 'textEdit')
@@ -154,6 +157,10 @@ class MainWindow(QtWidgets.QMainWindow):
     @Slot()
     def push_button_image(self):
         self.image_styler()
+
+    @Slot()
+    def push_button_block_quote(self):
+        self.prefix_styler('>', True)
 
     # Method to return string from editor
     def get_editor_text(self) -> str:
