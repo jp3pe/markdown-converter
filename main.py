@@ -69,6 +69,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.button_link = self.findChild(QtWidgets.QPushButton, 'pushButton_Link')
         self.button_link.clicked.connect(self.push_button_link)
 
+        self.button_image = self.findChild(QtWidgets.QPushButton, 'pushButton_Image')
+        self.button_image.clicked.connect(self.push_button_image)
+
         # Editor
         # Connect text editor to Slot
         self.edit = self.findChild(QtWidgets.QTextEdit, 'textEdit')
@@ -148,6 +151,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def push_button_link(self):
         self.link_styler()
 
+    @Slot()
+    def push_button_image(self):
+        self.image_styler()
+
     # Method to return string from editor
     def get_editor_text(self) -> str:
         text_result: str = self.edit.toPlainText()
@@ -205,14 +212,23 @@ class MainWindow(QtWidgets.QMainWindow):
         return changed_text
 
     # Method to insert link format
-    def insert_link(self, previous_text: str) -> str:
+    def insert_link(self, previous_text: str, image: bool) -> str:
         # When dragging started from 0 index
         if self.cursor_start <= 0:
-            changed_text = '[Explanation about website](http://example.com)' + previous_text
+            if image:
+                changed_text = '![Explanation about image](image\'s local path or web path starting http, https)\n' + \
+                               previous_text
+            else:
+                changed_text = '[Explanation about website](http://example.com)' + previous_text
             # When dragging started from bigger than 0 index
         elif self.cursor_start > 0:
-            changed_text = previous_text[:self.cursor_start] + '[Explanation about website](http://example.com)' + \
-                           previous_text[self.cursor_start:]
+            if image:
+                changed_text = previous_text[:self.cursor_start] + \
+                               '![Explanation about image](image\'s local path or web path starting http, https)\n' + \
+                               previous_text[self.cursor_start:]
+            else:
+                changed_text = previous_text[:self.cursor_start] + '[Explanation about website](http://example.com)' + \
+                               previous_text[self.cursor_start:]
 
         return changed_text
 
@@ -338,7 +354,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def link_styler(self):
         previous_text: str = self.get_editor_text()
 
-        changed_text = self.insert_link(previous_text)
+        changed_text = self.insert_link(previous_text, False)
+
+        self.edit.setPlainText(changed_text)
+
+    # Method to call image_insert and apply image to text editor
+    def image_styler(self):
+        previous_text: str = self.get_editor_text()
+
+        changed_text = self.insert_link(previous_text, True)
 
         self.edit.setPlainText(changed_text)
 
