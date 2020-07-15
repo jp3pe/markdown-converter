@@ -1,3 +1,4 @@
+import re
 import sys
 
 import PySide2
@@ -211,7 +212,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # When dragging started from bigger than 0 index
         elif self.cursor_start > 0:
             changed_text = previous_text[:self.cursor_start] + '[Explanation about website](http://example.com)' + \
-                previous_text[self.cursor_start:]
+                           previous_text[self.cursor_start:]
 
         return changed_text
 
@@ -257,6 +258,12 @@ class MainWindow(QtWidgets.QMainWindow):
             if temp_text[i] == '*':
                 temp_text = string_index_replacer(temp_text, '', i)
                 temp_text = space_remover(temp_text, i)
+
+            # Link delete
+            # [GitHub](http://github.com)
+            # link_regex = re.compile('^(\[\w+\]\(http://|(https://[\w+.]\))')
+            # if link_regex.match(temp_text[i]):
+            #     temp_text = re.sub(link_regex, '', temp_text)
 
             changed_text = temp_text
             self.edit.setPlainText(changed_text)
