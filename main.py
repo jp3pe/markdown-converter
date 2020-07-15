@@ -65,6 +65,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.button_unordered_list = self.findChild(QtWidgets.QPushButton, 'pushButton_UnorderedList')
         self.button_unordered_list.clicked.connect(self.push_button_unordered_list)
 
+        self.button_link = self.findChild(QtWidgets.QPushButton, 'pushButton_Link')
+        self.button_link.clicked.connect(self.push_button_link)
+
         # Editor
         # Connect text editor to Slot
         self.edit = self.findChild(QtWidgets.QTextEdit, 'textEdit')
@@ -140,6 +143,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def push_button_unordered_list(self):
         self.prefix_styler('*', True)
 
+    @Slot()
+    def push_button_link(self):
+        self.link_styler()
+
     # Method to return string from editor
     def get_editor_text(self) -> str:
         text_result: str = self.edit.toPlainText()
@@ -196,25 +203,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return changed_text
 
-    # Method to call insert_prefix and apply prefix to text editor
-    def prefix_styler(self, prefix: str, space: bool):
-        previous_text: str = self.get_editor_text()
-        if space:
-            changed_text = self.insert_prefix(prefix, previous_text, True)
-        else:
-            changed_text = self.insert_prefix(prefix, previous_text, False)
+    # Method to insert link format
+    def insert_link(self, previous_text: str) -> str:
+        # When dragging started from 0 index
+        if self.cursor_start <= 0:
+            changed_text = '[Explanation about website](http://example.com)' + previous_text
+            # When dragging started from bigger than 0 index
+        elif self.cursor_start > 0:
+            changed_text = previous_text[:self.cursor_start] + '[Explanation about website](http://example.com)' + \
+                previous_text[self.cursor_start:]
 
-        self.edit.setPlainText(changed_text)
-
-    # Method to call insert_suffix and apply suffix to text editor
-    def suffix_styler(self, suffix: str, space: bool):
-        previous_text: str = self.get_editor_text()
-        if space:
-            changed_text = self.insert_prefix(suffix, previous_text, True)
-        else:
-            changed_text = self.insert_suffix(suffix, previous_text, False)
-
-        self.edit.setPlainText(changed_text)
+        return changed_text
 
     def style_remover(self, previous_text: str):
         temp_text: str = previous_text
@@ -307,6 +306,34 @@ class MainWindow(QtWidgets.QMainWindow):
 
             changed_text = temp_text
             self.edit.setPlainText(changed_text)
+
+    # Method to call insert_prefix and apply prefix to text editor
+    def prefix_styler(self, prefix: str, space: bool):
+        previous_text: str = self.get_editor_text()
+        if space:
+            changed_text = self.insert_prefix(prefix, previous_text, True)
+        else:
+            changed_text = self.insert_prefix(prefix, previous_text, False)
+
+        self.edit.setPlainText(changed_text)
+
+    # Method to call insert_suffix and apply suffix to text editor
+    def suffix_styler(self, suffix: str, space: bool):
+        previous_text: str = self.get_editor_text()
+        if space:
+            changed_text = self.insert_prefix(suffix, previous_text, True)
+        else:
+            changed_text = self.insert_suffix(suffix, previous_text, False)
+
+        self.edit.setPlainText(changed_text)
+
+    # Method to call link_insert and apply link to text editor
+    def link_styler(self):
+        previous_text: str = self.get_editor_text()
+
+        changed_text = self.insert_link(previous_text)
+
+        self.edit.setPlainText(changed_text)
 
 
 if __name__ == "__main__":
