@@ -102,6 +102,11 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.pushButton_Image)
 
+        self.pushButton_BlockQuote = QPushButton(self.verticalLayoutWidget)
+        self.pushButton_BlockQuote.setObjectName(u"pushButton_BlockQuote")
+
+        self.verticalLayout.addWidget(self.pushButton_BlockQuote)
+
         self.textEdit = QTextEdit(self.centralwidget)
         self.textEdit.setObjectName(u"textEdit")
         self.textEdit.setGeometry(QRect(170, 10, 611, 531))
@@ -160,6 +165,7 @@ class Ui_MainWindow(object):
         self.pushButton_UnorderedList.setText(QCoreApplication.translate("MainWindow", u"UnorderedList", None))
         self.pushButton_Link.setText(QCoreApplication.translate("MainWindow", u"Link", None))
         self.pushButton_Image.setText(QCoreApplication.translate("MainWindow", u"Image", None))
+        self.pushButton_BlockQuote.setText(QCoreApplication.translate("MainWindow", u"BlockQuote", None))
         self.menuMarkdown_converter.setTitle(QCoreApplication.translate("MainWindow", u"Markdown converter", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
