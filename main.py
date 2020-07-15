@@ -75,6 +75,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.button_block_quote = self.findChild(QtWidgets.QPushButton, 'pushButton_BlockQuote')
         self.button_block_quote.clicked.connect(self.push_button_block_quote)
 
+        self.button_inline_code = self.findChild(QtWidgets.QPushButton, 'pushButton_InlineCode')
+        self.button_inline_code.clicked.connect(self.push_button_inline_code)
+
         # Editor
         # Connect text editor to Slot
         self.edit = self.findChild(QtWidgets.QTextEdit, 'textEdit')
@@ -161,6 +164,18 @@ class MainWindow(QtWidgets.QMainWindow):
     @Slot()
     def push_button_block_quote(self):
         self.prefix_styler('>', True)
+
+    @Slot()
+    def push_button_inline_code(self):
+        # Save current cursor location to prevent initialize after using it from method
+        temp_cursor_start = self.cursor_start
+        temp_cursor_end = self.cursor_end
+
+        # Modify cursor's start index after add '*'
+        self.prefix_styler('`', True)
+        self.cursor_start = temp_cursor_start + 2
+        self.cursor_end = temp_cursor_end + 2
+        self.suffix_styler('`', True)
 
     # Method to return string from editor
     def get_editor_text(self) -> str:
@@ -351,7 +366,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def suffix_styler(self, suffix: str, space: bool):
         previous_text: str = self.get_editor_text()
         if space:
-            changed_text = self.insert_prefix(suffix, previous_text, True)
+            changed_text = self.insert_suffix(suffix, previous_text, True)
         else:
             changed_text = self.insert_suffix(suffix, previous_text, False)
 
