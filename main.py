@@ -99,34 +99,34 @@ class MainWindow(QtWidgets.QMainWindow):
     # Call prefix_styler method to add '#'s
     @Slot()
     def push_button_h1(self):
-        self.prefix_styler('#', True)
+        self.prefix_styler('#', True, False)
 
     @Slot()
     def push_button_h2(self):
-        self.prefix_styler('##', True)
+        self.prefix_styler('##', True, False)
 
     @Slot()
     def push_button_h3(self):
-        self.prefix_styler('###', True)
+        self.prefix_styler('###', True, False)
 
     @Slot()
     def push_button_h4(self):
-        self.prefix_styler('####', True)
+        self.prefix_styler('####', True, False)
 
     @Slot()
     def push_button_h5(self):
-        self.prefix_styler('#####', True)
+        self.prefix_styler('#####', True, False)
 
     @Slot()
     def push_button_h6(self):
-        self.prefix_styler('######', True)
+        self.prefix_styler('######', True, False)
 
     @Slot()
     def push_button_bold(self):
         # Save current cursor location to prevent initialize after using it from method
         temp_cursor_start = self.cursor_start
         temp_cursor_end = self.cursor_end
-        self.prefix_styler('**', False)
+        self.prefix_styler('**', False, False)
 
         # Modify cursor's start index after add '**'
         self.cursor_start = temp_cursor_start + 2
@@ -140,18 +140,18 @@ class MainWindow(QtWidgets.QMainWindow):
         temp_cursor_end = self.cursor_end
 
         # Modify cursor's start index after add '*'
-        self.prefix_styler('*', False)
+        self.prefix_styler('*', False, False)
         self.cursor_start = temp_cursor_start + 1
         self.cursor_end = temp_cursor_end + 1
         self.suffix_styler('*', False)
 
     @Slot()
     def push_button_ordered_list(self):
-        self.prefix_styler('1.', True)
+        self.prefix_styler('1.', True, True)
 
     @Slot()
     def push_button_unordered_list(self):
-        self.prefix_styler('*', True)
+        self.prefix_styler('*', True, True)
 
     @Slot()
     def push_button_link(self):
@@ -163,7 +163,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @Slot()
     def push_button_block_quote(self):
-        self.prefix_styler('>', True)
+        self.prefix_styler('>', True, True)
 
     @Slot()
     def push_button_inline_code(self):
@@ -172,7 +172,7 @@ class MainWindow(QtWidgets.QMainWindow):
         temp_cursor_end = self.cursor_end
 
         # Modify cursor's start index after add '*'
-        self.prefix_styler('`', True)
+        self.prefix_styler('`', True, False)
         self.cursor_start = temp_cursor_start + 2
         self.cursor_end = temp_cursor_end + 2
         self.suffix_styler('`', True)
@@ -184,25 +184,47 @@ class MainWindow(QtWidgets.QMainWindow):
         return text_result
 
     # Method to insert prefix string
-    def insert_prefix(self, prefix: str, previous_text: str, space: bool) -> str:
+    def insert_prefix(self, prefix: str, previous_text: str, space: bool, new_line: bool) -> str:
         # When user didn't drag any string in the editor
         if self.cursor_start == self.cursor_end:
             return previous_text
 
         # When dragging started from 0 index
         if self.cursor_start <= 0:
-            # Return prefix + user's input text from editor
-            if space:
-                changed_text = prefix + ' ' + previous_text[self.cursor_start:]
+            if new_line:
+                # Return prefix + user's input text from editor
+                if space:
+                    changed_text = prefix + ' ' + \
+                                   previous_text[self.cursor_start:self.cursor_end] + '\n' + \
+                                   previous_text[self.cursor_end:]
+                    pass
+                else:
+                    changed_text = prefix + previous_text[self.cursor_start:self.cursor_end] + '\n' + \
+                                   previous_text[self.cursor_end:]
             else:
-                changed_text = prefix + previous_text[self.cursor_start:]
+                # Return prefix + user's input text from editor
+                if space:
+                    changed_text = prefix + ' ' + previous_text[self.cursor_start:]
+                else:
+                    changed_text = prefix + previous_text[self.cursor_start:]
         # When dragging start from bigger than 0 index
         elif self.cursor_start > 0:
-            # Return user's input text from text editor before dragged + prefix + behind user's dragged string
-            if space:
-                changed_text = previous_text[:self.cursor_start] + prefix + ' ' + previous_text[self.cursor_start:]
+            if new_line:
+                # Return user's input text from text editor before dragged + prefix + behind user's dragged string
+                if space:
+                    changed_text = previous_text[:self.cursor_start] + prefix + ' ' + \
+                                   previous_text[self.cursor_start:self.cursor_end] + '\n' + \
+                                   previous_text[self.cursor_end:]
+                else:
+                    changed_text = previous_text[:self.cursor_start] + prefix + \
+                                   previous_text[self.cursor_start:self.cursor_end] + '\n' + \
+                                   previous_text[self.cursor_end:]
             else:
-                changed_text = previous_text[:self.cursor_start] + prefix + previous_text[self.cursor_start:]
+                # Return user's input text from text editor before dragged + prefix + behind user's dragged string
+                if space:
+                    changed_text = previous_text[:self.cursor_start] + prefix + ' ' + previous_text[self.cursor_start:]
+                else:
+                    changed_text = previous_text[:self.cursor_start] + prefix + previous_text[self.cursor_start:]
 
         return changed_text
 
@@ -353,12 +375,18 @@ class MainWindow(QtWidgets.QMainWindow):
             self.edit.setPlainText(changed_text)
 
     # Method to call insert_prefix and apply prefix to text editor
-    def prefix_styler(self, prefix: str, space: bool):
+    def prefix_styler(self, prefix: str, space: bool, new_line: bool):
         previous_text: str = self.get_editor_text()
-        if space:
-            changed_text = self.insert_prefix(prefix, previous_text, True)
+        if new_line:
+            if space:
+                changed_text = self.insert_prefix(prefix, previous_text, True, True)
+            else:
+                changed_text = self.insert_prefix(prefix, previous_text, False, True)
         else:
-            changed_text = self.insert_prefix(prefix, previous_text, False)
+            if space:
+                changed_text = self.insert_prefix(prefix, previous_text, True, False)
+            else:
+                changed_text = self.insert_prefix(prefix, previous_text, False, False)
 
         self.edit.setPlainText(changed_text)
 
