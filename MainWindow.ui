@@ -101,6 +101,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_Link">
+       <property name="text">
+        <string>Link</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QTextEdit" name="textEdit">
