@@ -172,9 +172,9 @@ class MainWindow(QtWidgets.QMainWindow):
         temp_cursor_end = self.cursor_end
 
         # Modify cursor's start index after add '*'
-        self.prefix_styler('`', True, False)
-        self.cursor_start = temp_cursor_start + 2
-        self.cursor_end = temp_cursor_end + 2
+        self.prefix_styler('`', False, False)
+        self.cursor_start = temp_cursor_start + 1
+        self.cursor_end = temp_cursor_end + 1
         self.suffix_styler('`', True)
 
     # Method to return string from editor
